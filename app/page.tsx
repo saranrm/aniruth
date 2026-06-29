@@ -1,7 +1,11 @@
+import { EditorLayout } from "@/components/editor/editor-layout";
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      saran
-    </div>
+    <EditorLayout>
+      <div className="flex min-h-full items-center justify-center">
+        saran
+      </div>
+    </EditorLayout>
   );
 }
