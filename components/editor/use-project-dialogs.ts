@@ -14,9 +14,9 @@ type DialogState =
   | { kind: DialogKind; project: ProjectDialogProject | null }
 
 type UseProjectDialogsOptions = {
-  onCreateProject?: (name: string, slug: string) => void
-  onRenameProject?: (project: ProjectDialogProject, name: string) => void
-  onDeleteProject?: (project: ProjectDialogProject) => void
+  onCreateProject?: (name: string, slug: string) => Promise<void> | void
+  onRenameProject?: (project: ProjectDialogProject, name: string) => Promise<void> | void
+  onDeleteProject?: (project: ProjectDialogProject) => Promise<void> | void
 }
 
 function createSlug(value: string) {
@@ -40,6 +40,7 @@ export function useProjectDialogs({
   })
   const [projectName, setProjectName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const slugPreview = useMemo(() => createSlug(projectName), [projectName])
 
@@ -50,24 +51,28 @@ export function useProjectDialogs({
 
     setDialog({ kind: "closed", project: null })
     setProjectName("")
+    setErrorMessage(null)
   }
 
   function openCreateDialog() {
     setProjectName("")
+    setErrorMessage(null)
     setDialog({ kind: "create", project: null })
   }
 
   function openRenameDialog(project: ProjectDialogProject) {
     setProjectName(project.name)
+    setErrorMessage(null)
     setDialog({ kind: "rename", project })
   }
 
   function openDeleteDialog(project: ProjectDialogProject) {
     setProjectName("")
+    setErrorMessage(null)
     setDialog({ kind: "delete", project })
   }
 
-  function submitDialog() {
+  async function submitDialog() {
     if (dialog.kind === "closed") {
       return
     }
@@ -79,22 +84,25 @@ export function useProjectDialogs({
     }
 
     setIsLoading(true)
+    setErrorMessage(null)
 
     try {
       if (dialog.kind === "create") {
-        onCreateProject?.(trimmedName, slugPreview)
+        await onCreateProject?.(trimmedName, slugPreview)
       }
 
       if (dialog.kind === "rename" && dialog.project) {
-        onRenameProject?.(dialog.project, trimmedName)
+        await onRenameProject?.(dialog.project, trimmedName)
       }
 
       if (dialog.kind === "delete" && dialog.project) {
-        onDeleteProject?.(dialog.project)
+        await onDeleteProject?.(dialog.project)
       }
 
       setDialog({ kind: "closed", project: null })
       setProjectName("")
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong")
     } finally {
       setIsLoading(false)
     }
@@ -103,6 +111,7 @@ export function useProjectDialogs({
   return {
     dialog,
     isLoading,
+    errorMessage,
     projectName,
     setProjectName,
     slugPreview,

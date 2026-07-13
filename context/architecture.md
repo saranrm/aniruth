@@ -2,41 +2,33 @@
 
 ## Stack
 
-| Layer     | Technology                  | Role   |
-| --------- | --------------------------- | ------ |
-| Framework | [e.g. Next.js + TypeScript] | [Role] |
-| UI        | [e.g. Tailwind + shadcn/ui] | [Role] |
-| Auth      | [e.g. Clerk]                | [Role] |
-| Database  | [e.g. Prisma + PostgreSQL]  | [Role] |
-| [Layer]   | [Technology]                | [Role] |
+| Layer     | Technology           | Role                                      |
+| --------- | -------------------- | ----------------------------------------- |
+| Framework | Next.js + TypeScript | App framework and type-safe UI/runtime    |
+| UI        | Tailwind + shadcn/ui | Theme tokens and reusable UI primitives   |
+| Auth      | Clerk                | Authentication, user menu, route guarding |
+| Storage   | Mock client state    | Temporary project data until specified    |
 
 ## System Boundaries
 
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
-- `[folder]` — [What this folder owns and is responsible for]
+- `app/` - Next.js routes, layouts, and page composition.
+- `components/` - Reusable UI and editor interface components.
+- `lib/` - Shared utilities.
+- `context/` - Product, architecture, workflow, and progress documentation.
 
 ## Storage Model
 
-- **[Storage type e.g. Database]**: [What lives here —
-  e.g. metadata, ownership, relationships]
-- **[Storage type e.g. Blob/File Storage]**: [What lives
-  here — e.g. generated files, media, large artifacts]
+- **Client mock state**: Project dialog and sidebar data remain mock-only until API or persistence work is specified.
 
 ## Auth and Access Model
 
-- [How authentication works — e.g. Every user signs in
-  via Clerk]
-- [How ownership works — e.g. Every project has a single
-  owner]
-- [How access control works — e.g. Only the owner or a
-  collaborator can mutate project resources]
+- Users authenticate with Clerk.
+- Protected application routes require a signed-in user.
+- Project ownership and persistence access rules are not implemented until a storage spec is introduced.
 
 ## Invariants
 
-1. [Rule the codebase must never violate — e.g. Request
-   handlers do not run long-lived background work]
-2. [Invariant two]
-3. [Invariant three]
-4. [Invariant four]
+1. Generated shadcn/ui primitives should remain clean for future registry updates.
+2. Interactive editor state should stay isolated to client editor components until persistence is specified.
+3. Clerk's built-in profile, user menu, and logout flows should remain intact.
+4. Do not add persistence behavior without a current feature spec.
