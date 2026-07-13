@@ -22,6 +22,7 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
   const {
     dialog,
     isLoading,
+    errorMessage,
     projectName,
     setProjectName,
     slugPreview,
@@ -33,7 +34,7 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    submitDialog()
+    void submitDialog()
   }
 
   return (
@@ -61,6 +62,11 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
               <p className="text-xs text-muted-foreground">
                 Slug preview: <span className="text-foreground">{slugPreview}</span>
               </p>
+              {errorMessage ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {errorMessage}
+                </p>
+              ) : null}
             </div>
 
             <DialogFooter>
@@ -93,6 +99,11 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
                 onChange={(event) => setProjectName(event.target.value)}
                 autoFocus
               />
+              {errorMessage ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {errorMessage}
+                </p>
+              ) : null}
             </div>
 
             <DialogFooter>
@@ -114,6 +125,12 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
                 Delete {dialog.project?.name}? This cannot be undone.
               </DialogDescription>
             </DialogHeader>
+
+            {errorMessage ? (
+              <p role="alert" className="text-sm text-destructive">
+                {errorMessage}
+              </p>
+            ) : null}
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={closeDialog}>

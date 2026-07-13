@@ -8,10 +8,21 @@ Update this file after every meaningful implementation change.
 
 ## Current Goal
 
-- Project dialogs and sidebar actions from `04-project-dialogs.md` are implemented.
+- Implement real project interactions in `EditorHome` sidebar (`07-wire-editor-home.md`).
 
 ## Completed
 
+- Created `hooks/use-project-actions.ts` hook for client-side API mutations, utilizing shared helpers.
+- Extracted shared project utilities (like `generateRoomId` and fetch wrappers) into `lib/projects.ts`.
+- Converted `app/editor/page.tsx` into an async Server Component fetching initial projects using Prisma.
+- Updated `components/editor/editor-home.tsx` to handle `initialProjects` prop, migrating dialog state to use actions hook.
+- Handled Prisma Driver Adapters required by V7 by implementing standard `@prisma/adapter-pg` driver inside `lib/prisma.ts`.
+- Verified TypeScript compilation and build processes (`npm run build`).
+- Created `lib/prisma.ts` global client instance.
+- Updated Prisma configuration to properly support `prismaSchemaFolder` multi-file schemas.
+- Implemented `app/api/projects/route.ts` (GET list, POST create) with Clerk auth.
+- Implemented `app/api/projects/[projectId]/route.ts` (GET, PUT, DELETE) with Clerk auth.
+- Verified TypeScript compilation (`npx tsc --noEmit`) passes cleanly with the generated Prisma client.
 - Installed and configured shadcn/ui with the Radix Nova preset.
 - Added UI primitives: Button, Card, Dialog, Input, Tabs, Textarea, and Scroll Area.
 - Installed Lucide React and shadcn dependencies.

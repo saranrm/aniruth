@@ -15,6 +15,7 @@ type EditorLayoutProps = {
   onCreateProject?: () => void
   onRenameProject?: (project: ProjectDialogProject) => void
   onDeleteProject?: (project: ProjectDialogProject) => void
+  projectPersistenceDisabledReason?: string
   className?: string
 }
 
@@ -24,6 +25,7 @@ export function EditorLayout({
   onCreateProject,
   onRenameProject,
   onDeleteProject,
+  projectPersistenceDisabledReason,
   className,
 }: EditorLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -48,6 +50,7 @@ export function EditorLayout({
         onCreateProject={onCreateProject}
         onRenameProject={onRenameProject}
         onDeleteProject={onDeleteProject}
+        projectPersistenceDisabledReason={projectPersistenceDisabledReason}
       />
 
       {isSidebarOpen ? (

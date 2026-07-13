@@ -1,0 +1,18 @@
+enum ProjectStatus {
+  DRAFT
+  ARCHIVED
+}
+
+model Project {
+  id             String        @id @default(uuid())
+  clerkUserId    String
+  name           String
+  description    String?
+  status         ProjectStatus @default(DRAFT)
+  canvasJsonPath String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([clerkUserId])
+  @@index([createdAt])
+}
