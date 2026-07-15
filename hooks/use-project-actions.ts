@@ -8,6 +8,7 @@ import {
   renameProjectRecord,
   deleteProjectRecord,
 } from "@/lib/projects";
+import { persistActiveProjectId } from "@/components/editor/active-project-context";
 
 export function useProjectActions() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export function useProjectActions() {
       const roomId = generateRoomId(slug);
       
       const project = await createProjectRecord(roomId, name);
+      persistActiveProjectId(project.id);
       router.push(`/editor/${project.id}`);
     },
     
@@ -30,6 +32,7 @@ export function useProjectActions() {
       await deleteProjectRecord(project.id);
       
       if (pathname.includes(project.id)) {
+        persistActiveProjectId(null);
         router.push("/editor");
       } else {
         router.refresh();

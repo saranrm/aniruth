@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation"
-import { auth } from "@clerk/nextjs/server"
-import { isDatabaseConfigured, prisma } from "@/lib/prisma"
+import { isDatabaseConfigured } from "@/lib/prisma"
+import { getAccessibleProjects, getCurrentProjectIdentity } from "@/lib/project-access"
 
 import { EditorHome } from "@/components/editor/editor-home"
 
 export default async function EditorPage() {
-  const { userId } = await auth()
+  const identity = await getCurrentProjectIdentity()
 
-  if (!userId) {
+  if (!identity) {
     redirect("/sign-in")
   }
 
@@ -20,11 +20,16 @@ export default async function EditorPage() {
     )
   }
 
-  const projects = await prisma.project.findMany({
-    where: { clerkUserId: userId },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true, name: true },
-  })
+  const projects = await getAccessibleProjects(identity)
 
-  return <EditorHome initialProjects={projects} />
+  return (
+    <EditorHome
+      initialProjects={projects
+        .filter((project) => project.clerkUserId === identity.userId)
+        .map(({ id, name }) => ({ id, name }))}
+      initialSharedProjects={projects
+        .filter((project) => project.clerkUserId !== identity.userId)
+        .map(({ id, name }) => ({ id, name }))}
+    />
+  )
 }

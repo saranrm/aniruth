@@ -1,0 +1,5 @@
+﻿7a14b51 HEAD@{0}: commit: Updated some files
+064c109 HEAD@{1}: commit: Restore project state and update files
+58e01f4 HEAD@{2}: reset: moving to origin/development
+c51c1d6 HEAD@{3}: commit: Updated some files
+80e7759 HEAD@{4}: commit (initial): Updated some files

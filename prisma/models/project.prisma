@@ -10,9 +10,21 @@ model Project {
   description    String?
   status         ProjectStatus @default(DRAFT)
   canvasJsonPath String?
+  collaborators  ProjectCollaborator[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
   @@index([clerkUserId])
   @@index([createdAt])
+}
+
+model ProjectCollaborator {
+  id        String   @id @default(uuid())
+  projectId String
+  email     String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, email])
+  @@index([email])
 }
