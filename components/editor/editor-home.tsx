@@ -11,11 +11,13 @@ import { useProjectActions } from "@/hooks/use-project-actions";
 type EditorHomeProps = {
   projectPersistenceDisabledReason?: string;
   initialProjects?: ProjectDialogProject[];
+  initialSharedProjects?: ProjectDialogProject[];
 };
 
 export function EditorHome({
   projectPersistenceDisabledReason,
   initialProjects = [],
+  initialSharedProjects = [],
 }: EditorHomeProps) {
   const dialogs = useProjectActions();
   const isProjectPersistenceDisabled = Boolean(
@@ -25,6 +27,7 @@ export function EditorHome({
   return (
     <EditorLayout
       projects={initialProjects}
+      sharedProjects={initialSharedProjects}
       onCreateProject={
         isProjectPersistenceDisabled ? undefined : dialogs.openCreateDialog
       }

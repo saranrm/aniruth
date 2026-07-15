@@ -1,0 +1,7 @@
+﻿7a14b51 Updated some files
+064c109 Restore project state and update files
+58e01f4 implement dialogs
+c0a2102 Add editor layout shell
+0c63709 Initial commit of clean boilerplate
+4c239e9 first commit
+23c9f96 Initial commit from Create Next App

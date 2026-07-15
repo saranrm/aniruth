@@ -129,3 +129,19 @@
     @apply font-sans;
     }
 }
+
+/* React Flow Infinite Canvas Custom Overrides */
+.react-flow {
+  background-color: transparent !important;
+}
+
+.react-flow__pane {
+  background-color: transparent !important;
+}
+
+/* Remove default focus outlines to make it seamless */
+.react-flow__renderer,
+.react-flow__viewport {
+  outline: none !important;
+}
+

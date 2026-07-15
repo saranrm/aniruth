@@ -4,14 +4,41 @@ Update this file after every meaningful implementation change.
 
 ## Current Phase
 
-- Complete
+- Completed: Collaborative Shape Panel and Custom Nodes
 
 ## Current Goal
 
-- Implement real project interactions in `EditorHome` sidebar (`07-wire-editor-home.md`).
+- Feature finalized and verified successfully.
 
-## Completed
-
+- Added Shapes Node Panel toolbar under left workspace sidebar for selecting Rectangle, Circle, Diamond, and Triangle shapes.
+- Configured HTML5 drag-and-drop protocols on both Flow (collaborative) and LocalFlow (fallback preview draft) canvases, converting coordinates dynamically to canvas positions based on panning and zoom offsets.
+- Implemented CanvasNodeComponent to render custom SVG shapes (Rectangle, Circle, Diamond, Triangle) with selection glow and top/right/bottom/left handles.
+- Built PropertiesPanel properties inspector for real-time labelEditing, color accent changes, shape transformations, and node deletion.
+- Set explicit calc height settings on the editor layout container to fix React Flow width/height canvas element resolution warnings in HTML rendering tree.
+- Created GET /api/projects/shared to query projects shared with the current user as a collaborator.
+- Fixed ShareDialog to dispatch router.refresh() and a project-shared window event after invite/remove actions.
+- Rewrote ProjectSidebar to dynamically fetch shared projects from /api/projects/shared, listen for the project-shared event, and re-fetch on tab switch and sidebar open.
+- Fixed Liveblocks auth: replaced string authEndpoint with a callback function that POSTs the room ID in the request body and returns forbidden sentinel on 403 to prevent reconnect loops.
+- Added shared React Flow canvas types (CanvasNodeData, CanvasNode, CanvasEdge) in types/canvas.ts.
+- Replaced the workspace canvas placeholder with a collaborative canvas in components/editor/editor-workspace.tsx.
+- Created components/editor/collaborative-canvas.tsx wrapper setting up Liveblocks RoomProvider (with cursor presence), ClientSideSuspense, and ErrorBoundary.
+- Built components/editor/flow.tsx binding React Flow to Liveblocks state using useLiveblocksFlow, loose connections, fitView, dot background, and MiniMap.
+- Configured standard Liveblocks types (Presence, UserMeta) in liveblocks.config.ts.
+- Created cached Liveblocks Node client and deterministic user color mapping helper in lib/liveblocks.ts.
+- Implemented POST /api/liveblocks-auth to authorize users for dynamic project rooms, creating the room on the fly if needed and returning session tokens (access tokens).
+- Installed @liveblocks/node dependency and verified clean TypeScript compilation and Next.js builds.
+- Added editor-scoped active project state with route synchronization and localStorage persistence.
+- Wired workspace sidebar create, rename, and delete controls to the existing project actions and dialogs.
+- Split owned and shared project data for both the editor home and workspace sidebar, with read-only shared project controls.
+- Updated project list and detail APIs to use owner-or-collaborator access checks and added selection loading/error handling.
+- Added the workspace Share dialog with temporary copy-link feedback and owner/read-only collaborator states.
+- Added collaborator list, invite, and removal API routes with server-side owner enforcement for writes.
+- Enriched collaborator records with Clerk display names and avatars while retaining email-only fallbacks.
+- Built `/editor/[roomId]` as a server-rendered workspace route with Clerk identity and project access checks.
+- Added `lib/project-access.ts` for current identity lookup and owner-or-collaborator project queries.
+- Added `ProjectCollaborator` persistence and its Prisma migration for email-based collaborator access.
+- Added the `AccessDenied` state for missing or unauthorized workspaces.
+- Reworked the editor workspace into a full-height shell with a docked project sidebar, project navbar, disabled share control, AI sidebar toggle, canvas placeholder, and AI placeholder.
 - Created `hooks/use-project-actions.ts` hook for client-side API mutations, utilizing shared helpers.
 - Extracted shared project utilities (like `generateRoomId` and fetch wrappers) into `lib/projects.ts`.
 - Converted `app/editor/page.tsx` into an async Server Component fetching initial projects using Prisma.
@@ -52,7 +79,7 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- Continue with the next feature spec.
+- Wait for next user requirements or modifications.
 
 ## Open Questions
 
@@ -67,9 +94,14 @@ Update this file after every meaningful implementation change.
 - Keep sidebar state in a client editor layout so app routes can remain mostly server-rendered while interactive chrome stays isolated.
 - Keep Clerk's built-in forms, user menu, profile settings, and logout flow intact while styling through Clerk appearance variables.
 - Keep project dialog state client-side and mock-only until API/persistence work is specified.
+- Keep authorization queries in `lib/project-access.ts` so project routes and future protected endpoints share one access rule.
+- Store collaborator access as normalized email addresses and enrich presentation data from Clerk at read time instead of maintaining a local user table.
 
 ## Session Notes
 
+- Repaired sidebar selection, navigation, active state, shared project loading, and workspace actions; `npx.cmd tsc --noEmit` and `npm.cmd run build` passed.
+- Completed `09-share-dialog.md`; `npx.cmd tsc --noEmit` and `npm.cmd run build` passed.
+- Completed `08-editor-workspace-shell.md`; `npx.cmd tsc --noEmit` and `npm.cmd run build` passed with `/editor/[roomId]` registered as a dynamic server route.
 - Fixed sign-in 404 by changing Clerk proxy public route patterns to static `/sign-in(.*)` and `/sign-up(.*)` matchers; verified `http://localhost:3000/sign-in` returns 200, plus `npm run lint`, `npx tsc --noEmit`, and `npm run build` passed.
 - Completed project dialogs/sidebar actions implementation from `04-project-dialogs.md`; `npm run lint`, `npx tsc --noEmit`, and `npm run build` passed.
 - Started project dialogs/sidebar actions implementation from `04-project-dialogs.md`.

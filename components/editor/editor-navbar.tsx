@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils"
 
 type EditorNavbarProps = {
   isSidebarOpen: boolean
+  showSidebarToggle?: boolean
   onToggleSidebar?: () => void
+  left?: ReactNode
   center?: ReactNode
   right?: ReactNode
   className?: string
@@ -14,7 +16,9 @@ type EditorNavbarProps = {
 
 export function EditorNavbar({
   isSidebarOpen,
+  showSidebarToggle = true,
   onToggleSidebar,
+  left,
   center,
   right,
   className,
@@ -24,27 +28,34 @@ export function EditorNavbar({
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center border-b border-border bg-background/95 px-3 text-foreground",
+        "flex h-14 shrink-0 items-center justify-between border-b border-zinc-800 bg-zinc-950/95 px-3 text-zinc-100",
         className
       )}
     >
-      <div className="flex min-w-0 flex-1 items-center justify-start">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-          aria-pressed={isSidebarOpen}
-          onClick={onToggleSidebar}
-        >
-          <SidebarIcon className="size-5" />
-        </Button>
+      {/* Left Area */}
+      <div className="flex min-w-0 flex-1 items-center justify-start gap-3">
+        {showSidebarToggle ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            aria-pressed={isSidebarOpen}
+            onClick={onToggleSidebar}
+            className="text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900"
+          >
+            <SidebarIcon className="size-5" />
+          </Button>
+        ) : null}
+        {left}
       </div>
 
+      {/* Center Area */}
       <div className="flex min-w-0 flex-1 items-center justify-center">
         {center}
       </div>
 
+      {/* Right Area */}
       <div className="flex min-w-0 flex-1 items-center justify-end">
         {right}
       </div>

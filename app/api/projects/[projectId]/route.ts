@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
+import { getCurrentProjectIdentity, getProjectWithAccess } from "@/lib/project-access";
 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const identity = await getCurrentProjectIdentity();
 
-    if (!userId) {
+    if (!identity) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -19,12 +20,7 @@ export async function GET(
 
     const { projectId } = await params;
 
-    const project = await prisma.project.findUnique({
-      where: {
-        id: projectId,
-        clerkUserId: userId,
-      },
-    });
+    const project = await getProjectWithAccess(projectId, identity);
 
     if (!project) {
       return new NextResponse("Not Found", { status: 404 });
@@ -69,7 +65,7 @@ export async function PUT(
     }
 
     // Verify project belongs to user first
-    const existingProject = await prisma.project.findUnique({
+    const existingProject = await prisma.project.findFirst({
       where: {
         id: projectId,
         clerkUserId: userId,
@@ -116,7 +112,7 @@ export async function DELETE(
 
     const { projectId } = await params;
 
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
         clerkUserId: userId,
@@ -141,4 +137,3 @@ export async function DELETE(
 }
 
 export const PATCH = PUT;
-

@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
+import { getAccessibleProjects, getCurrentProjectIdentity } from "@/lib/project-access";
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const identity = await getCurrentProjectIdentity();
 
-    if (!userId) {
+    if (!identity) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -14,16 +15,14 @@ export async function GET() {
       return new NextResponse("Database is not configured", { status: 503 });
     }
 
-    const projects = await prisma.project.findMany({
-      where: {
-        clerkUserId: userId,
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
+    const projects = await getAccessibleProjects(identity);
 
-    return NextResponse.json(projects);
+    return NextResponse.json(
+      projects.map((project) => ({
+        ...project,
+        isOwner: project.clerkUserId === identity.userId,
+      })),
+    );
   } catch (error) {
     console.error("[PROJECTS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
